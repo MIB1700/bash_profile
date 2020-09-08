@@ -299,8 +299,6 @@ mkd () {
 
     mkdir -pv "$1";
     cd "$1"
-
-	ls
 }
 #	remove directory and list remaining content
 #   ------------------------------------------------------------
@@ -309,7 +307,7 @@ rmd () {
 	numF=$(command ls -1 | wc -l);
 	rm -rv "$1";
 	newF=$(command ls -1 | wc -l);
-	ls
+
 	echo "count from => to: $numF => $newF"
 }
 #	change directory and list content
@@ -326,7 +324,7 @@ rml (){
 	numF=$(command ls -1 | wc -l);
 	rm -v "$1";
 	newF=$(command ls -1 | wc -l);
-	ls
+
 	echo "count from => to: $numF => $newF"
 }
 #   ------------------------------------------------------------
