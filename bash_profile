@@ -57,6 +57,9 @@ alias wget="wget -c"
 	alias getzip="wget -r -A.zip "
 
 alias mv="mv -v "
+	alias tcn='mv --force -t ~/.Trash '
+	alias trash='tcn'
+	alias del='tcn'
 
 alias ditto="ditto -V "
 
@@ -65,20 +68,27 @@ alias ls="c && ls -pG --color=auto"
 	#alias lss="ls |rev|sort|rev|more"	#sort by filetype
 	alias lss="dus */"
 	alias la="ls -ad .*" #--color=auto
-	alias ll="ls -l"
+	alias ll="ls -lh"
 	alias lc="ls; echo ''; command ls -1 | wc -l; echo '     items'"
-	alias lcount="ls -l | wc -l"
+	alias lcount="command ls -1 | wc -l"
+	#sort by recently modified (newest to oldest)
+	alias lt="ls -t"
 
 alias sudo="sudo "
 
 alias rm="rm -v"
 
 alias cp="cp -iv"
+	alias cpv="rsync -ah --info=progress2 " #use instead of copy... with progressbar!
 
 alias rsync="rsync -vazhPm"
 alias rssh="rsync -e ssh "
 
 alias mount="mount |column -t "
+
+alias gh='history|grep '
+
+alias mkdir="mkdir -pv "
 
 # Conversions
 #   ------------------------------------------------------------
@@ -190,6 +200,11 @@ alias portuninstall="sudo port uninstall --follow-dependencies "
 
 alias findempty="find . -type d -empty -mindepth 1 -print"
 	alias delempty="find . -type d -empty -mindepth 1 -delete"
+
+
+
+
+
 #   ------------------------------------------------------------
 #							FUNCTIONS
 #   ------------------------------------------------------------
@@ -215,7 +230,7 @@ MRinstaBot()
 }
 #   ------------------------------------------------------------
 numberfiles()
-{
+{	#e.g. all files in directory: numberfiles .
 	num=0;
 	count=ls -l | wc -l
 	chars=echo -n $num | wc -c
@@ -223,6 +238,8 @@ numberfiles()
 	for file in *;
 		do
 		mv "$file" "$(printf '%s_%04d' ${file%%.*} $chars $num).${file#*.}"; ((num++)); done
+
+	ls
 }
 #   ------------------------------------------------------------
 pdf2single()
@@ -252,14 +269,6 @@ pdf2kindle()
 	echo "--------"
 }
 #   ------------------------------------------------------------
-mkcd()
-{
-	NAME="$1"
-
-	mkdir -p "$NAME"
-	cd "$NAME"
-}
-#   ------------------------------------------------------------
 code2rtf()
 {
 	highlight -i "$1" --syntax=js -O rtf | pbcopy;
@@ -270,7 +279,6 @@ code2rtf()
 #   ------------------------------------------------------------
 MRapplications()
 {
-
 	TODAY=$(date "+%Y-%m-%d")
 
 	touch /Users/martinritter/MRcurrentApps.txt
@@ -289,8 +297,10 @@ MRapplications()
 #   ------------------------------------------------------------
 mkd () {
 
-    mkdir -p "$1";
+    mkdir -pv "$1";
     cd "$1"
+
+	ls
 }
 #	remove directory and list remaining content
 #   ------------------------------------------------------------
