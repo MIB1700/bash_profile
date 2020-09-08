@@ -306,8 +306,11 @@ mkd () {
 #   ------------------------------------------------------------
 rmd () {
 
+	numF=$(command ls -1 | wc -l);
 	rm -rv "$1";
-	lc
+	newF=$(command ls -1 | wc -l);
+	ls
+	echo "count from => to: $numF => $newF"
 }
 #	change directory and list content
 #   ------------------------------------------------------------
@@ -320,9 +323,11 @@ cdl () {
 #   ------------------------------------------------------------
 rml (){
 
-	echo "$1";
+	numF=$(command ls -1 | wc -l);
 	rm -v "$1";
-	lc
+	newF=$(command ls -1 | wc -l);
+	ls
+	echo "count from => to: $numF => $newF"
 }
 #   ------------------------------------------------------------
 mvl (){
