@@ -18,7 +18,8 @@ export PATH="${PATH}:/Applications/Visual Studio Code.app/Contents/Resources/app
 # MacPorts Installer addition on 2017-01-27_at_02:28:10: adding an appropriate PATH variable for use with MacPorts.
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-export PATH="/Users/martinritter/Documents/Development/Scripts:$PATH"
+export PATH="/Users/martinritter/Documents/Development/Scripts/bash:$PATH"
+export PATH="/Users/martinritter/Documents/Development/Scripts/python:$PATH"
 export PATH="/Users/martinritter/Documents/MATLAB/ambiResearch/matlabCode/tracking:$PATH"
 export PATH="/Applications:$PATH"
 export PATH="/opt/local/libexec/gnubin:$PATH"
