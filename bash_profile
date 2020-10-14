@@ -33,6 +33,8 @@ if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
          . /opt/local/etc/profile.d/bash_completion.sh
 fi
 
+eval "$(starship init bash)"
+
 #   ------------------------------------------------------------
 # 							Aliases
 #   ------------------------------------------------------------
@@ -121,6 +123,7 @@ alias o="open "
 
 alias openbash="openT ~/.bash_profile"
 	alias ob="openbash"
+alias obs="openT ~/.config/starship.toml"
 
 # remove all aliases... re-load the .bash_profile
 alias rb="unalias -a; c; source ~/.bash_profile;"
