@@ -170,17 +170,15 @@ alias cpbib="cp -Rv /Users/martinritter/Documents/latex/MASTERbibFiles/*.bib ."
 #   ------------------------------------------------------------
 alias timer="utimer -s"
 
-alias showLibrary=" chflags nohidden ~/Library "
+alias showLibrary="chflags nohidden ~/Library "
 
-alias showAll=" diskutil list "
+alias showAll="diskutil list "
 
 alias code2rtf="pbpaste | highlight --syntax=js -O rtf | pbcopy"
 
 alias formatRBP="sudo diskutil eraseDisk FAT32 RASPBIAN MBRFormat "
 
 alias battery="pmset -g batt"
-
-alias vol="osascript -e 'set volume output volume 70'"
 
 alias cronmail="open /var/mail/martinritter"
 alias cronmaild="echo 'd *' | mail"
@@ -207,8 +205,6 @@ alias findempty="find . -type d -empty -mindepth 1 -print"
 
 
 
-
-
 #   ------------------------------------------------------------
 #							FUNCTIONS
 #   ------------------------------------------------------------
@@ -218,19 +214,6 @@ setupunity() {
     curl -o .gitignore https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
     git add .
     git commit -m "Initial commit."
-}
-#   ------------------------------------------------------------
-AAinstaBot()
-{
-    /Users/martinritter/Documents/Development/scripts/python/instapy-quickstart-master/quickstart_templates/AAinstaScript
-}
-#   ------------------------------------------------------------
-MRinstaBot()
-{
-    tmux select-pane -t 1
-    /Users/martinritter/Documents/Development/scripts/python/instapy-quickstart-master/quickstart_templates/MRinstaScript
-
-  #  tmux detach
 }
 #   ------------------------------------------------------------
 numberfiles()
