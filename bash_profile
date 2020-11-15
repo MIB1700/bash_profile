@@ -607,6 +607,11 @@ MRsetTmux(){
 }
 
 echo '.bash_profile reloaded...'
+echo
+echo '----------------------'
+fortune
+echo '----------------------'
+echo
 
 #MRsetTmux
 
