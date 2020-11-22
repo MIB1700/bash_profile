@@ -33,6 +33,8 @@ if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
          . /opt/local/etc/profile.d/bash_completion.sh
 fi
 
+export HISTTIMEFORMAT="%F %T "
+
 eval "$(starship init bash)"
 
 #   ------------------------------------------------------------
@@ -44,6 +46,7 @@ eval "$(starship init bash)"
 alias x="exit"
 alias c="clear"
 
+alias cd-="cd -" #jump to previous directory
 alias ..="cd .. && ls"
 	alias ...="cd ../.. && ls"
 
@@ -66,7 +69,7 @@ alias mv="mv -v "
 
 alias ditto="ditto -V "
 
-alias ls="c && ls -pG --color=auto"
+alias ls="c && ls -pG --color=auto "
 	alias lm="ls | more"
 	#alias lss="ls |rev|sort|rev|more"	#sort by filetype
 	alias lss="dus */"
@@ -204,6 +207,11 @@ alias findempty="find . -type d -empty -mindepth 1 -print"
 	alias delempty="find . -type d -empty -mindepth 1 -delete"
 
 
+alias cow="c; fortune | cowsay; echo; echo "------------------------------""
+
+alias num="numberfiles"
+	alias _num="_numberfiles"
+	alias num_="num"
 
 #   ------------------------------------------------------------
 #							FUNCTIONS
@@ -216,17 +224,29 @@ setupunity() {
     git commit -m "Initial commit."
 }
 #   ------------------------------------------------------------
+numberfiles_()
+{
+	numberfiles;
+}
 numberfiles()
-{	#e.g. all files in directory: numberfiles .
+{	#e.g. all files in directory: numberfiles
 	num=0;
-	count=ls -l | wc -l
-	chars=echo -n $num | wc -c
 
 	for file in *;
 		do
-		mv "$file" "$(printf '%s_%04d' ${file%%.*} $chars $num).${file#*.}"; ((num++)); done
+		#echo "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}";
+		mv "$file" "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}"; ((num++)); done
+}
+#   ------------------------------------------------------------
+_numberfiles()
+{
+	#e.g. all files in directory: numberfiles
+	num=0;
 
-	ls
+	for file in *;
+		do
+		#echo "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}";
+		mv "$file" "$(printf '%04d_%s' $num ${file%%.*}).${file#*.}"; ((num++)); done
 }
 #   ------------------------------------------------------------
 pdf2single()
@@ -538,17 +558,29 @@ pdfImages() {
 
     pdfimages -png "$1" extracted_image
 }
+#   ------------------------------------------------------------
 MRtest()	{
 
-	my_file=`basename "$1"` # get full file name as a script  parameter and strip the path
-	my_extension="${my_file##*.}"
-	my_file="${my_file%.*}" # will return base file name before the extension
+	echo $1 $2 $3 $4 $5
 
-	echo "$my_file"
-	echo "$my_extension"
+	if [ $# -eq 0 ]
+	then
+		echo "No arguments supplied"
+	fi
 
-    test=*.jpg;
-    echo $test;
+	if [ -z "$1" ]
+	then
+		echo "No argument supplied"
+	fi
+	# my_file=`basename "$1"` # get full file name as a script  parameter and strip the path
+	# my_extension="${my_file##*.}"
+	# my_file="${my_file%.*}" # will return base file name before the extension
+
+	# echo "$my_file"
+	# echo "$my_extension"
+
+    # test=*.jpg;
+    # echo $test;
 
 #	ls -lha >&2
 
@@ -589,12 +621,12 @@ MRsetTmux(){
     tmux attach
 }
 
+cow
+echo
 echo '.bash_profile reloaded...'
-echo
-echo '----------------------'
-fortune
-echo '----------------------'
-echo
+
+
+
 
 #MRsetTmux
 
