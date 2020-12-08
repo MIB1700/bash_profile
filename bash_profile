@@ -209,6 +209,34 @@ alias findempty="find . -type d -empty -mindepth 1 -print"
 
 alias cow="c; fortune | cowsay; echo; echo "------------------------------""
 
+rcow()
+{
+	#pick a random cow file...
+	rAppearance=$(command shuf -n1 -e /opt/local/share/cowsay/cows/*)
+	rAppearance2=$(command shuf -n1 -e /Users/martinritter/Documents/Development/Scripts/bash/cows/*)
+
+	#generate fortune
+	fort=$(command fortune)
+
+	#half the time use the default cow
+	if [ "$(($RANDOM % 100 + 1))" -gt 75 ]
+		then
+			cowsay ${fort}
+		else
+		#the other half use a randomized "cow"
+			if [ "$(($RANDOM % 1 + 1))" -gt 2 ]
+				then
+					cowsay -f ${rAppearance} ${fort}
+				else
+					cowsay -f ${rAppearance2} ${fort}
+			fi
+	fi
+
+	echo
+	echo "------------------------------"
+
+}
+
 alias num="numberfiles"
 	alias _num="_numberfiles"
 	alias num_="num"
@@ -621,7 +649,7 @@ MRsetTmux(){
     tmux attach
 }
 
-cow
+rcow
 echo
 echo '.bash_profile reloaded...'
 
