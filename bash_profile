@@ -27,7 +27,7 @@ export PATH="/opt/local/libexec/gnubin:$PATH"
 export MAGICK_HOME=/opt/local
 
 #export EDITOR=nano
-export EDITOR="/usr/local/bin/mate -w"
+# export EDITOR="/usr/local/bin/mate -w"
 
 if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
          . /opt/local/etc/profile.d/bash_completion.sh
@@ -35,7 +35,7 @@ fi
 
 export HISTTIMEFORMAT="%F %T "
 
-eval "$(starship init bash)"
+# eval "$(starship init bash)"
 
 #   ------------------------------------------------------------
 # 							Aliases
@@ -73,6 +73,7 @@ alias ls="c && ls -pG --color=auto "
 	alias lm="ls | more"
 	#alias lss="ls |rev|sort|rev|more"	#sort by filetype
 	alias lss="dus */"
+	alias lsz="ls -lrS"
 	alias la="ls -ad .*" #--color=auto
 	alias ll="ls -lh"
 	alias lc="ls; echo ''; command ls -1 | wc -l; echo '     items'"
@@ -179,6 +180,8 @@ alias showAll="diskutil list "
 
 alias code2rtf="pbpaste | highlight --syntax=js -O rtf | pbcopy"
 
+alias c#2rtf="pbpaste | highlight --syntax=csharp -n -O rtf |pbcopy"
+
 alias formatRBP="sudo diskutil eraseDisk FAT32 RASPBIAN MBRFormat "
 
 alias battery="pmset -g batt"
@@ -212,8 +215,8 @@ alias cow="c; fortune | cowsay; echo; echo "------------------------------""
 rcow()
 {
 	#pick a random cow file...
-	rAppearance=$(command shuf -n1 -e /opt/local/share/cowsay/cows/*)
-	rAppearance2=$(command shuf -n1 -e /Users/martinritter/Documents/Development/Scripts/bash/cows/*)
+	rAppearance=$(command gshuf -n1 -e /opt/local/share/cowsay/cows/*)
+	rAppearance2=$(command gshuf -n1 -e /Users/martinritter/Documents/Development/Scripts/bash/cows/*)
 
 	#generate fortune
 	fort=$(command fortune)
@@ -654,8 +657,9 @@ echo
 echo '.bash_profile reloaded...'
 
 
-
-
 #MRsetTmux
 
 source /Users/martinritter/.config/broot/launcher/bash/br
+# MacPorts Installer addition on 2020-12-25_at_12:49:58: adding an appropriate DISPLAY variable for use with MacPorts.
+export DISPLAY=:0
+# Finished adapting your DISPLAY environment variable for use with MacPorts.
