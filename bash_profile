@@ -111,6 +111,7 @@ alias rotateAll="sips sips -r 180 *.png"
 alias montage="montage -geometry '1x1+0+0<' -background white "
 alias sortPics="exiftool -r -d %Y/%m/%d \"-directory<filemodifydate\" \"-directory<createdate\" \"-directory<datetimeoriginal\" ."
 
+alias youtube-dl='youtube-dl --geo-bypass '
 alias yts="youtube-dl -f 140 "
 alias ytmp3="youtube-dl --extract-audio --audio-format mp3 --ignore-errors --continue --no-overwrites --yes-playlist --output \"%(title)s.%(ext)s\" "
 alias ytwav="youtube-dl --extract-audio --audio-format wav --ignore-errors --continue --no-overwrites --yes-playlist --output \"%(title)s.%(ext)s\" "
@@ -180,7 +181,7 @@ alias showAll="diskutil list "
 
 alias code2rtf="pbpaste | highlight --syntax=js -O rtf | pbcopy"
 
-alias c#2rtf="pbpaste | highlight --syntax=csharp -n -O rtf |pbcopy"
+alias c#2rtf="pbpaste | highlight --syntax csharp -n --font-size 10 -O rtf |pbcopy"
 
 alias formatRBP="sudo diskutil eraseDisk FAT32 RASPBIAN MBRFormat "
 
@@ -592,53 +593,26 @@ pdfImages() {
 #   ------------------------------------------------------------
 MRtest()	{
 
-	echo $1 $2 $3 $4 $5
+	count=$(lcount)
+    for i in {01..05};
+	do
+	echo "$i"
+	done
 
-	if [ $# -eq 0 ]
-	then
-		echo "No arguments supplied"
-	fi
+	:'
+		STR="/path/to/foo.cs"
+		echo ${STR%.cs}    # /path/to/foo
+		echo ${STR%.cs}.o  # /path/to/foo.o
+		echo ${STR%/*}      # /path/to
 
-	if [ -z "$1" ]
-	then
-		echo "No argument supplied"
-	fi
-	# my_file=`basename "$1"` # get full file name as a script  parameter and strip the path
-	# my_extension="${my_file##*.}"
-	# my_file="${my_file%.*}" # will return base file name before the extension
+		echo ${STR##*.}     # cs (extension)
+		echo ${STR##*/}     # foo.cs (basepath)
 
-	# echo "$my_file"
-	# echo "$my_extension"
+		echo ${STR#*/}      # path/to/foo.cs
+		echo ${STR##*/}     # foo.cs
 
-    # test=*.jpg;
-    # echo $test;
-
-#	ls -lha >&2
-
-
-#	echo "//////echo "${1:-100}" largest file locations////////"
-	#DATE=$(date "+%Y-%m-%d% %H:%M:%S");
-
-#	for i in "$(df -Hl | sed -n 's/.*\///p')"
-#		do
-#	i="$(df -Hl | sed -n 's/.*\///p')"
-
-#		printf '%s\n' "$i" | while IFS= read -r line
-#		do
- # 		 echo "$line"
-#		done
-
-#		done
-
-#	rsync -naic /Users/martinritter/Desktop/Post-Praeludium\ Per\ Donau /Users/martinritter/Desktop/untitled\ folder
-
-
-#	echo "repair volume ${dir##*/}"
- #   diskutil repairVolume ${dir##*/}
-
-
-#	echo 'testing'
-
+		echo ${STR/foo/bar} # /path/to/bar.cs
+	'
 }
 #   ------------------------------------------------------------
 MRsetTmux(){
@@ -651,6 +625,7 @@ MRsetTmux(){
 
     tmux attach
 }
+#   ------------------------------------------------------------
 
 rcow
 echo
@@ -660,6 +635,7 @@ echo '.bash_profile reloaded...'
 #MRsetTmux
 
 source /Users/martinritter/.config/broot/launcher/bash/br
-# MacPorts Installer addition on 2020-12-25_at_12:49:58: adding an appropriate DISPLAY variable for use with MacPorts.
+# MacPorts Installer addition on 2020-12-25_at_12:49:58:
+		#adding an appropriate DISPLAY variable for use with MacPorts.
 export DISPLAY=:0
 # Finished adapting your DISPLAY environment variable for use with MacPorts.
