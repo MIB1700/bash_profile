@@ -173,6 +173,8 @@ alias cpbib="cp -Rv /Users/martinritter/Documents/latex/MASTERbibFiles/*.bib ."
 
 #	misc.
 #   ------------------------------------------------------------
+alias startServer="http-server ./public --port 9000" #needs index.html inside of ./public
+
 alias timer="utimer -s"
 
 alias showLibrary="chflags nohidden ~/Library "
