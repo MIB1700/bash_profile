@@ -173,7 +173,7 @@ alias cpbib="cp -Rv /Users/martinritter/Documents/latex/MASTERbibFiles/*.bib ."
 
 #	misc.
 #   ------------------------------------------------------------
-alias startServer="http-server ./public --port 9000" #needs index.html inside of ./public
+alias startServer="http-server --port 9000" #needs index.html inside of ./public
 
 alias timer="utimer -s"
 
@@ -249,6 +249,33 @@ alias num="numberfiles"
 
 #   ------------------------------------------------------------
 #							FUNCTIONS
+#   ------------------------------------------------------------
+reverseVideo() {
+
+	STR="$1"
+	EXT=${STR##*.}
+	FNAME=${STR%.*}
+
+	ffmpeg -i "$STR" -vf reverse "$STR"_reversed.$EXT
+}
+#   ------------------------------------------------------------
+reverseAudio() {
+
+	STR="$1"
+	EXT=${STR##*.}
+	FNAME=${STR%.*}
+
+	ffmpeg -i "$STR" -af areverse "$STR"_reversed.$EXT
+}
+#   ------------------------------------------------------------
+reverseVideoAudio() {
+
+	STR="$1"
+	EXT=${STR##*.}
+	FNAME=${STR%.*}
+
+	ffmpeg -i "$STR" -vf reverse -af areverse "$STR"_reversed.$EXT
+}
 #   ------------------------------------------------------------
 setupunity() {
 
@@ -594,12 +621,6 @@ pdfImages() {
 }
 #   ------------------------------------------------------------
 MRtest()	{
-
-	count=$(lcount)
-    for i in {01..05};
-	do
-	echo "$i"
-	done
 
 	:'
 		STR="/path/to/foo.cs"
