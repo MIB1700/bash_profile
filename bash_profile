@@ -72,7 +72,7 @@ alias ditto="ditto -V "
 alias ls="c && ls -pG --color=auto "
 	alias lm="ls | more"
 	#alias lss="ls |rev|sort|rev|more"	#sort by filetype
-	alias lss="dus */"
+	alias lss="dus ."
 	alias lsz="ls -lrS"
 	alias la="ls -ad .*" #--color=auto
 	alias ll="ls -lh"
@@ -162,6 +162,8 @@ alias ambipath="cdl /Users/martinritter/Documents/MATLAB/ambiResearch/matlabCode
 alias MRthesis="cd /Users/martinritter/Documents/School/CMD/thesis; o."
 	alias MRthesisMat="cd /Users/martinritter/Documents/MATLAB/ambiResearch/matlabCode; o."
 	alias MRthesisLatex="cd /Users/martinritter/Documents/School/CMD/thesis/Thesis_LATEX; o."
+
+alias MRscores="cd /Users/martinritter/Documents/Music/MRscores/; o."
 
 alias AA="ssh -p 22 alyssaaska@Alyssas-MacBook-Pro.local."
 alias MRssh="ssh martinri@martin-ritter.com"
@@ -621,6 +623,16 @@ pdfImages() {
 }
 #   ------------------------------------------------------------
 MRtest()	{
+
+
+	if [ -t 1 ] ; then
+		# stdout is a terminal
+		echo 'stdout is a terminal'
+	else
+		# stdout isn't a terminal
+		#don't forget to check the file for this text! it is redirected after all!!
+		echo 'stdout is NOT a terminal'
+	fi
 
 	:'
 		STR="/path/to/foo.cs"
