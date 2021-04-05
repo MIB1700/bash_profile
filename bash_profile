@@ -312,12 +312,13 @@ _numberfiles()
 		mv "$file" "$(printf '%04d_%s' $num ${file%%.*}).${file#*.}"; ((num++)); done
 }
 #   ------------------------------------------------------------
-pdf2single()
-{
-	pdftk "$1" burst
+#pdftk hasn't been updated for the latest OS yet :(
+# pdf2single()
+# {
+# 	pdftk "$1" burst
 
-	ls
-}
+# 	ls
+# }
 #   ------------------------------------------------------------
 pdf2kindle()
 {
@@ -413,22 +414,22 @@ mvl (){
 MRrepo () {
 
 	if [ $# -eq 0 ]; then
-   		{ echo 'No arguments provided' >$2; }
+   		{ echo 'No arguments provided' >"$2"; }
 
 	else 	#one argument -> extension type
 		if [ $# -eq 1 ]; then
-			local _folder=repo_$1
+			local _folder=repo_"$1"
 
 			mkdir -pv $_folder
 			mv *.$1 $_folder/
 		fi
 		#two arguments -> extension type and folder name
 		if [ $# -eq 2 ]; then
-			local _folder=repo_$2
+			local _folder=repo_"$2"
 
 			mkdir -pv $_folder
 
-			mv *.$1 $_folder/
+			mv *."$1" $_folder/
 		fi
 
 		cd $_folder/
@@ -609,13 +610,55 @@ MRpdf2pngBW()     {
 
 }
 #   ------------------------------------------------------------
-MRpdfCollate()	{
 
-	cd /Users/martinritter/pdfs/
+Zeit_pdf_png() {
 
-	pdftk A="$1" B="$2" shuffle A Bend-1 output collated_pages.pdf
+	nname="$1"
+	convert -alpha off -quality 100 -density 300 "$nname" "%03d_${nname%.pdf}".png
+
+	pngAddShadow
+
+	for f in *
+   		do
+	   #name of current file
+	   name="${f%_logo.png}"
+
+       if [[ "$f" == "${name}_logo.png" ]]
+       then
+			rm "$f"
+		fi
+	done
 
 }
+
+pngAddShadow()     {
+
+   for f in *
+   do
+       if [[ $f == *.png ]]
+       then
+			#name of current file
+			name="${f%.png}"
+
+			convert "${f}" -bordercolor white -border 10 \
+			 \( +clone -background black -shadow 75x25+10+10 \) \
+			 +swap -background none -layers merge +repage \
+			 "${name}"_shadow.png
+
+       fi
+   done
+
+}
+alias pngShadow="pngAddShadow"
+#   ------------------------------------------------------------
+# pdftk hasn't been updated for the latest OS yet :(
+# MRpdfCollate()	{
+
+# 	cd /Users/martinritter/pdfs/
+
+# 	pdftk A="$1" B="$2" shuffle A Bend-1 output collated_pages.pdf
+
+# }
 #   ------------------------------------------------------------
 pdfImages() {
 
@@ -624,30 +667,30 @@ pdfImages() {
 #   ------------------------------------------------------------
 MRtest()	{
 
+	echo " "
+	# if [ -t 1 ] ; then
+	# 	# stdout is a terminal
+	# 	echo 'stdout is a terminal'
+	# else
+	# 	# stdout isn't a terminal
+	# 	#don't forget to check the file for this text! it is redirected after all!!
+	# 	echo 'stdout is NOT a terminal'
+	# fi
 
-	if [ -t 1 ] ; then
-		# stdout is a terminal
-		echo 'stdout is a terminal'
-	else
-		# stdout isn't a terminal
-		#don't forget to check the file for this text! it is redirected after all!!
-		echo 'stdout is NOT a terminal'
-	fi
+	# :'
+	# 	STR="/path/to/foo.cs"
+	# 	echo ${STR%.cs}    # /path/to/foo
+	# 	echo ${STR%.cs}.o  # /path/to/foo.o
+	# 	echo ${STR%/*}      # /path/to
 
-	:'
-		STR="/path/to/foo.cs"
-		echo ${STR%.cs}    # /path/to/foo
-		echo ${STR%.cs}.o  # /path/to/foo.o
-		echo ${STR%/*}      # /path/to
+	# 	echo ${STR##*.}     # cs (extension)
+	# 	echo ${STR##*/}     # foo.cs (basepath)
 
-		echo ${STR##*.}     # cs (extension)
-		echo ${STR##*/}     # foo.cs (basepath)
+	# 	echo ${STR#*/}      # path/to/foo.cs
+	# 	echo ${STR##*/}     # foo.cs
 
-		echo ${STR#*/}      # path/to/foo.cs
-		echo ${STR##*/}     # foo.cs
-
-		echo ${STR/foo/bar} # /path/to/bar.cs
-	'
+	# 	echo ${STR/foo/bar} # /path/to/bar.cs
+	# '
 }
 #   ------------------------------------------------------------
 MRsetTmux(){
@@ -674,3 +717,15 @@ source /Users/martinritter/.config/broot/launcher/bash/br
 		#adding an appropriate DISPLAY variable for use with MacPorts.
 export DISPLAY=:0
 # Finished adapting your DISPLAY environment variable for use with MacPorts.
+
+# MacPorts Installer addition on 2021-03-19_at_23:18:04: adding an appropriate PATH variable for use with MacPorts.
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+
+# MacPorts Installer addition on 2021-03-19_at_23:18:04: adding an appropriate DISPLAY variable for use with MacPorts.
+export DISPLAY=:0
+# Finished adapting your DISPLAY environment variable for use with MacPorts.
+
+# opam configuration
+test -r /Users/martinritter/.opam/opam-init/init.sh && . /Users/martinritter/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
