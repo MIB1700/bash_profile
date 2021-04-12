@@ -614,7 +614,7 @@ MRpdf2pngBW()     {
 Zeit_pdf_png() {
 
 	nname="$1"
-	convert -alpha off -quality 100 -density 300 "$nname" "%03d_${nname%.pdf}".png
+	convert -alpha remove -quality 100 -density 150 "$nname" "%03d_${nname%.pdf}".png
 
 	pngAddShadow
 
