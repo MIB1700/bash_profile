@@ -242,7 +242,6 @@ rcow()
 
 	echo
 	echo "------------------------------"
-
 }
 
 alias num="numberfiles"
@@ -258,7 +257,7 @@ reverseVideo() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -vf reverse "$STR"_reversed.$EXT
+	ffmpeg -i "$STR" -vf reverse "$FNAME"_reversed.$EXT
 }
 #   ------------------------------------------------------------
 reverseAudio() {
@@ -267,7 +266,7 @@ reverseAudio() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -af areverse "$STR"_reversed.$EXT
+	ffmpeg -i "$STR" -af areverse "$FNAME"_reversed.$EXT
 }
 #   ------------------------------------------------------------
 reverseVideoAudio() {
@@ -276,7 +275,7 @@ reverseVideoAudio() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -vf reverse -af areverse "$STR"_reversed.$EXT
+	ffmpeg -i "$STR" -vf reverse -af areverse "$FNAME"_reversed.$EXT
 }
 #   ------------------------------------------------------------
 setupunity() {
@@ -586,7 +585,6 @@ MRavi2mv4()     {
    do
       ffmpeg -i "$f" "${f%.*}".m4v
    done
-
 }
 #   ------------------------------------------------------------
 MRaudio2mp3()     {
@@ -595,7 +593,6 @@ MRaudio2mp3()     {
    do
       ffmpeg -i "$f"  -c:a mp3 -ab 192k "${f%.*}".mp3
    done
-
 }
 #   ------------------------------------------------------------
 MRpdf2pngBW()     {
@@ -607,7 +604,6 @@ MRpdf2pngBW()     {
            pdf2pngBW "$f"
        fi
    done
-
 }
 #   ------------------------------------------------------------
 
@@ -628,7 +624,6 @@ Zeit_pdf_png() {
 			rm "$f"
 		fi
 	done
-
 }
 
 pngAddShadow()     {
@@ -647,7 +642,6 @@ pngAddShadow()     {
 
        fi
    done
-
 }
 alias pngShadow="pngAddShadow"
 #   ------------------------------------------------------------
@@ -713,6 +707,7 @@ echo '.bash_profile reloaded...'
 #MRsetTmux
 
 source /Users/martinritter/.config/broot/launcher/bash/br
+
 # MacPorts Installer addition on 2020-12-25_at_12:49:58:
 		#adding an appropriate DISPLAY variable for use with MacPorts.
 export DISPLAY=:0
