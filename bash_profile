@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 #   ------------------------------------------------------------
 #	.bash_profile
 #
@@ -59,7 +60,7 @@ alias wget="wget -c"
 	# wget specific types
 	alias getpdf="wget -r -A.pdf "
 	alias getjpeg="wget -r -A.jpg "
-	alias getmp3="wget -r -A.mp3 "
+	alias getmp3="wget -r -l1 -H -A mp3 " #-H follows links; careful!
 	alias getzip="wget -r -A.zip "
 
 alias mv="mv -v "
@@ -101,11 +102,11 @@ alias mkdir="mkdir -pv "
 #   ------------------------------------------------------------
 alias pdf2png="convert -alpha off -quality 100 -density 300 -type TrueColor "
 alias pdf2pngBW="convert -alpha off -quality 100 -density 300 "
-alias pdf2pngAll="convert -alpha off -quality 100 -density 300 -type TrueColor *.pdf -set filename: "%t" %[filename:].png"
-alias png2jpgAll="convert -alpha off -quality 100 -density 300 -type TrueColor *.png -set filename: "%t" %[filename:].jpg"
-alias eps2pngAll="convert -alpha off -quality 100 -density 600 -type TrueColor *.eps -set filename: "%t" %[filename:].png"
-alias pngAddBoarder="convert -border 10 -bordercolor black *.png -set filename: "%t_border" %[filename:].png"
-alias tiff2png="convert *.tiff -set filename: "%t" %[filename:].png"
+alias pdf2pngAll="convert -alpha off -quality 100 -density 300 -type TrueColor *.pdf -set filename: \"%t\" %[filename:].png"
+alias png2jpgAll="convert -alpha off -quality 100 -density 300 -type TrueColor *.png -set filename: \"%t\" %[filename:].jpg"
+alias eps2pngAll="convert -alpha off -quality 100 -density 600 -type TrueColor *.eps -set filename: \"%t\" %[filename:].png"
+alias pngAddBoarder="convert -border 10 -bordercolor black *.png -set filename: \"%t_border\" %[filename:].png"
+alias tiff2png="convert *.tiff -set filename: \"%t\" %[filename:].png"
 
 alias rotateAll="sips sips -r 180 *.png"
 alias montage="montage -geometry '1x1+0+0<' -background white "
@@ -215,7 +216,7 @@ alias findempty="find . -type d -empty -mindepth 1 -print"
 	alias delempty="find . -type d -empty -mindepth 1 -delete"
 
 
-alias cow="c; fortune | cowsay; echo; echo "------------------------------""
+alias cow="c; fortune | cowsay; echo; echo \"------------------------------\""
 
 rcow()
 {
@@ -227,16 +228,16 @@ rcow()
 	fort=$(command fortune)
 
 	#half the time use the default cow
-	if [ "$(($RANDOM % 100 + 1))" -gt 75 ]
+	if [ "$((RANDOM % 100 + 1))" -gt 75 ]
 		then
-			cowsay ${fort}
+			cowsay "${fort}"
 		else
 		#the other half use a randomized "cow"
-			if [ "$(($RANDOM % 1 + 1))" -gt 2 ]
+			if [ "$((RANDOM % 1 + 1))" -gt 2 ]
 				then
-					cowsay -f ${rAppearance} ${fort}
+					cowsay -f "${rAppearance}" "${fort}"
 				else
-					cowsay -f ${rAppearance2} ${fort}
+					cowsay -f "${rAppearance2}" "${fort}"
 			fi
 	fi
 
@@ -257,7 +258,7 @@ reverseVideo() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -vf reverse "$FNAME"_reversed.$EXT
+	ffmpeg -i "$STR" -vf reverse "$FNAME"_reversed."$EXT"
 }
 #   ------------------------------------------------------------
 reverseAudio() {
@@ -266,7 +267,7 @@ reverseAudio() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -af areverse "$FNAME"_reversed.$EXT
+	ffmpeg -i "$STR" -af areverse "$FNAME"_reversed."$EXT"
 }
 #   ------------------------------------------------------------
 reverseVideoAudio() {
@@ -275,7 +276,7 @@ reverseVideoAudio() {
 	EXT=${STR##*.}
 	FNAME=${STR%.*}
 
-	ffmpeg -i "$STR" -vf reverse -af areverse "$FNAME"_reversed.$EXT
+	ffmpeg -i "$STR" -vf reverse -af areverse "$FNAME"_reversed."$EXT"
 }
 #   ------------------------------------------------------------
 setupunity() {
@@ -297,7 +298,7 @@ numberfiles()
 	for file in *;
 		do
 		#echo "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}";
-		mv "$file" "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}"; ((num++)); done
+		mv "$file" "$(printf '%s_%04d' "${file%%.*}" $num).${file#*.}"; ((num++)); done
 }
 #   ------------------------------------------------------------
 _numberfiles()
@@ -308,7 +309,7 @@ _numberfiles()
 	for file in *;
 		do
 		#echo "$(printf '%s_%04d' ${file%%.*} $num).${file#*.}";
-		mv "$file" "$(printf '%04d_%s' $num ${file%%.*}).${file#*.}"; ((num++)); done
+		mv "$file" "$(printf '%04d_%s' $num "${file%%.*}").${file#*.}"; ((num++)); done
 }
 #   ------------------------------------------------------------
 #pdftk hasn't been updated for the latest OS yet :(
@@ -353,22 +354,22 @@ MRapplications()
 
 	touch /Users/martinritter/MRcurrentApps.txt
 
-	cd /Applications
+	cd /Applications || exit
 
-	echo 'Applications installed as of: ' $TODAY  > /Users/martinritter/MRcurrentApps.txt
-	echo'' >>/Users/martinritter/MRcurrentApps.txt
-	echo'' >>/Users/martinritter/MRcurrentApps.txt
+	echo 'Applications installed as of: ' "$TODAY"  > /Users/martinritter/MRcurrentApps.txt
+	{
+		echo''
+		echo''
+		ls
+ 	} >>/Users/martinritter/MRcurrentApps.txt
 
-	ls >> /Users/martinritter/MRcurrentApps.txt
-
-	cd /Applications
 }
 #	make directory and go there
 #   ------------------------------------------------------------
 mkd () {
 
     mkdir -pv "$1";
-    cd "$1"
+    cd "$1" || exit
 }
 #	remove directory and list remaining content
 #   ------------------------------------------------------------
@@ -384,7 +385,7 @@ rmd () {
 #   ------------------------------------------------------------
 cdl () {
 
-	cd "$1";
+	cd "$1" || exit;
 	ls
 }
 #	delete file and list content of folder
@@ -404,7 +405,7 @@ mvl (){
 	_target="${_path%/}/$2"
 
 	mv -i "$1" "$2"
-	cd "$_target"
+	cd "$_target" || exit
 	lc
 }
 #   ------------------------------------------------------------
@@ -419,19 +420,19 @@ MRrepo () {
 		if [ $# -eq 1 ]; then
 			local _folder=repo_"$1"
 
-			mkdir -pv $_folder
-			mv *.$1 $_folder/
+			mkdir -pv "$_folder"
+			mv ./*."$1" "$_folder"/
 		fi
 		#two arguments -> extension type and folder name
 		if [ $# -eq 2 ]; then
 			local _folder=repo_"$2"
 
-			mkdir -pv $_folder
+			mkdir -pv "$_folder"
 
-			mv *."$1" $_folder/
+			mv ./*."$1" "$_folder"/
 		fi
 
-		cd $_folder/
+		cd "$_folder"/ || exit
 		lc
 	fi
 }
@@ -442,17 +443,17 @@ _MRrepo () {
 	if [ $# -eq 1 ]; then
 		local _folder=repo_"$1"
 
-		mkdir -pv ./REPO/$_folder
+		mkdir -pv ./REPO/"$_folder"
 
-		mv *."$1" ./REPO/$_folder/
+		mv ./*."$1" ./REPO/"$_folder"/
 	fi
 
 	if [ $# -eq 2 ]; then
 		local _folder=repo_"$2"
 
-		mkdir -pv ./REPO/$_folder
+		mkdir -pv ./REPO/"$_folder"
 
-		mv *."$1" ./REPO/$_folder/
+		mv ./*."$1" ./REPO/"$_folder"/
 	fi
 }
 #   ------------------------------------------------------------
@@ -547,7 +548,7 @@ MRclean()	{
 				*.ps)				_MRrepo ps pdf;;
                 *.mobi)				_MRrepo mobi pdf;;
 				*.epub)				_MRrepo epub pdf;;
-				*)  	echo "no match for `$file`";;
+				*)  	echo "no match for $($file)";;
 			esac
 		fi
 	done
@@ -575,7 +576,7 @@ extract ()	{
 			*) echo "can’t extract ‘$1’…";;
 		esac
 	else
-		{ echo "‘$1’ is not a valid file!"; exit 1; }
+		{ echo "$1 is not a valid file!"; exit 1; }
 	fi
 }
 #   ------------------------------------------------------------
@@ -659,8 +660,16 @@ pdfImages() {
     pdfimages -png "$1" extracted_image
 }
 #   ------------------------------------------------------------
+error()
+{
+  echo "Error: $*" >&2
+  exit 1
+}
 MRtest()	{
 
+	if ! which "$1" &>/dev/null; then
+    	error "$1 command not found, you must install it first..."
+	fi
 	echo " "
 	# if [ -t 1 ] ; then
 	# 	# stdout is a terminal
