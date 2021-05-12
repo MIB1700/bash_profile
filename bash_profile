@@ -20,6 +20,7 @@ export PATH="${PATH}:/Applications/Visual Studio Code.app/Contents/Resources/app
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 export PATH="/Users/martinritter/Documents/Development/Scripts/bash:$PATH"
+export PATH="/Users/martinritter/Documents/Development/Scripts/bash/MRaudioChopperStitcher:$PATH"
 export PATH="/Users/martinritter/Documents/Development/Scripts/python:$PATH"
 export PATH="/Users/martinritter/Documents/MATLAB/ambiResearch/matlabCode/tracking:$PATH"
 export PATH="/Applications:$PATH"
@@ -169,6 +170,22 @@ alias MRscores="cd /Users/martinritter/Documents/Music/MRscores/; o."
 alias AA="ssh -p 22 alyssaaska@Alyssas-MacBook-Pro.local."
 alias MRssh="ssh martinri@martin-ritter.com"
 
+alias vsCode="code ."
+	alias vscode="vsCode"
+	alias vsc="vscode"
+
+vsShell () {
+
+	if ! cp /Users/martinritter/Documents/Development/Scripts/bash/__DEFAULT\ SCRIPT/defaultScript.sh /Users/martinritter/Documents/Development/Scripts/bash/"$1"; then
+
+		echo >&2 "ERROR: couldn't copy defaultScript.sh to $1"
+
+		exit 1
+	fi
+
+	code /Users/martinritter/Documents/Development/Scripts/bash/"$1"
+}
+
 #   bib things
 #   ------------------------------------------------------------
 alias bibItalics="sed -i -e ‘s;{\\textless}i{\\textgreater};\\textit{;g’ -e ‘s;{\\textless}/i{\\textgreater};};g’ "
@@ -287,10 +304,23 @@ setupunity() {
     git commit -m "Initial commit."
 }
 #   ------------------------------------------------------------
+commitSize() {
+
+	git rev-list --objects --all |
+  	git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+	sed -n 's/^blob //p' |
+	sort --numeric-sort --key=2 |
+	cut -c 1-12,41- |
+	$(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+
+  #from https://stackoverflow.com/questions/10622179/how-to-find-identify-large-commits-in-git-history
+}
+#   ------------------------------------------------------------
 numberfiles_()
 {
 	numberfiles;
 }
+#   ------------------------------------------------------------
 numberfiles()
 {	#e.g. all files in directory: numberfiles
 	num=0;
@@ -665,12 +695,64 @@ error()
   echo "Error: $*" >&2
   exit 1
 }
+MRcToO(){
+
+	 for f in *
+   do
+       if [[ $f == *.c ]]
+       then
+
+		  gcc -Wall -c "$f" -o ./oFiles/"${f%.*}".o
+	   fi
+	done
+
+	#-Wno-implicit-function-declaration -Wimplicit-int -Wunused-variable -Wunused-label
+}
 MRtest()	{
 
-	if ! which "$1" &>/dev/null; then
-    	error "$1 command not found, you must install it first..."
-	fi
+TODAY=$(date "+%Y-%m-%d")
+
+{
+	echo "-------------------------------
+-------------------------------
+$TODAY
+-------------------------------
+
+$(port installed)
+
+-------------------------------
+-------------------------------"
+} >> ~/Desktop/TEST.txt
+
+	{
+		echo "-------------------------------"
+		echo "-------------------------------"
+		echo "$TODAY"
+		echo "-------------------------------"
+		echo
+		echo
+
+		port installed
+
+		echo
+		echo
+		echo "-------------------------------"
+		echo "-------------------------------"
+	} >> ~/Desktop/TEST.txt
+
+	# find . \( \( -type f -a -name "*.mp4" \) -o \
+    #       \( -name "*.aif*" \) -o \
+    #       \( -name "*.wav" \) \
+    #    \) -a -exec du -hm {} \; | sort -n -r
+
+	#    -a -exec sh -c 'echo "$0"' {} \; \)
+
+	# if ! which "$1" &>/dev/null; then
+    # 	error "$1 command not found, you must install it first..."
+	# fi
+
 	echo " "
+
 	# if [ -t 1 ] ; then
 	# 	# stdout is a terminal
 	# 	echo 'stdout is a terminal'
