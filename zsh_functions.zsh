@@ -534,8 +534,6 @@ MRsetTmux(){
 }
 #   ------------------------------------------------------------
 
-rcow
-
 vsShell () {
 
 	if ! cp /Users/martinritter/Documents/Development/Scripts/bash/__DEFAULT\ SCRIPT/defaultScript.sh /Users/martinritter/Documents/Development/Scripts/bash/"$1"; then
@@ -573,4 +571,16 @@ rcow()
 
 	echo
 	echo "------------------------------"
+}
+
+rcow
+
+# https://filipe.kiss.ink/zmv-zsh-rename/
+# http://manpages.ubuntu.com/manpages/bionic/man1/zsh-lovers.1.html
+rmSpace()
+{
+	zmv -v '(* *)' '${1// /_}'
+
+	# For any file in the current directory with at least one space in the name,
+	# replace every space by an underscore and display the commands executed.
 }

@@ -132,17 +132,6 @@ alias vsCode="code ."
 	alias vscode="vsCode"
 	alias vsc="vscode"
 
-vsShell () {
-
-	if ! cp /Users/martinritter/Documents/Development/Scripts/bash/__DEFAULT\ SCRIPT/defaultScript.sh /Users/martinritter/Documents/Development/Scripts/bash/"$1"; then
-
-		echo >&2 "ERROR: couldn't copy defaultScript.sh to $1"
-
-		exit 1
-	fi
-
-	code /Users/martinritter/Documents/Development/Scripts/bash/"$1"
-}
 
 #   bib things
 #   ------------------------------------------------------------
@@ -198,3 +187,7 @@ alias cow="c; fortune | cowsay; echo; echo \"------------------------------\""
 alias num="numberfiles"
 	alias _num="_numberfiles"
 	alias num_="num"
+
+#check zsh_functions.zsh for functionality
+alias rms="rmSpace"
+alias rmspace="rmSpace"
