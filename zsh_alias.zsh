@@ -6,6 +6,7 @@ alias x="exit"
 alias c="clear"
 
 alias cd-="cd -" #jump to previous directory
+#alias -="cd-"
 alias ..="cd .. && ls"
 	alias ...="cd ../.. && ls"
 
@@ -29,17 +30,18 @@ alias mv="mv -v "
 
 alias ditto="ditto -V "
 
-alias ls="c && ls -pG --color=auto "
-	alias lm="ls | more"
-	#alias lss="ls |rev|sort|rev|more"	#sort by filetype
-	alias lss="dus ."
-	alias lsz="ls -lrS"
-	alias la="ls -ad .*" #--color=auto
-	alias ll="ls -lh"
-	alias lc="ls; echo ''; command ls -1 | wc -l; echo '     items'"
-	alias lcount="command ls -1 | wc -l"
-	#sort by recently modified (newest to oldest)
-	alias lt="ls -t"
+alias ls="c && ls -pG "
+		#--color=auto "
+	# alias lm="ls | more"
+	# #alias lss="ls |rev|sort|rev|more"	#sort by filetype
+	# alias lss="dus ."
+	# alias lsz="ls -lrS"
+	# alias la="ls -ad .*" #--color=auto
+	# alias ll="ls -lh"
+	# alias lc="ls; echo ''; command ls -1 | wc -l; echo '     items'"
+	# alias lcount="command ls -1 | wc -l"
+	# #sort by recently modified (newest to oldest)
+	# alias lt="ls -t"
 
 alias sudo="sudo "
 
@@ -191,3 +193,7 @@ alias num="numberfiles"
 #check zsh_functions.zsh for functionality
 alias rms="rmSpace"
 alias rmspace="rmSpace"
+
+#see zsh_functions.zsh for functionality
+alias newShell="vsShell"
+alias newshell="newShell"
