@@ -589,7 +589,11 @@ rcow
 TEST() {
 
 	clear
-	port outdated
-	sudo port upgrade outdated
-	echo $?
+	ls
+
+	if [ $? -eq 0 ]; then
+	 echo "ls worked"
+	 else
+	 echo "ls didn't work"
+	 fi
 }
