@@ -93,7 +93,7 @@ alias openbash="openT ~/.zshrc"
 alias obs="openT ~/.config/starship.toml"
 
 # remove all aliases... re-load the .bash_profile
-alias rb="unalias -a; c; source ~/.zshrc;"
+alias rb="unalias -a; clear; source ~/.zshrc;"
 
 alias opensim="open -n /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
 
@@ -134,6 +134,9 @@ alias vsCode="code ."
 	alias vscode="vsCode"
 	alias vsc="vscode"
 
+alias vsF="code -a ."
+alias vsFolder=vsF
+alias vsf=vsF
 
 #   bib things
 #   ------------------------------------------------------------
