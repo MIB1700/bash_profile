@@ -589,11 +589,33 @@ rcow
 TEST() {
 
 	clear
-	ls
+	# ls
 
-	if [ $? -eq 0 ]; then
-	 echo "ls worked"
-	 else
-	 echo "ls didn't work"
-	 fi
+	# if [ $? -eq 0 ]; then
+	#  echo "ls worked"
+	#  else
+	#  echo "ls didn't work"
+	#  fi
+
+
+	# tmpfile=$(mktemp /tmp/abc-script.XXXXXX)
+
+	# rm "$tmpfile"
+
+	tmpfile=$(mktemp)
+
+	curl -o $tmpfile https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
+
+	args=( "${(@f)$(< $tmpfile)}" )
+
+	for arg in "${args[@]}" ; do
+		[[ "$arg" =~ ^#.*$ ]] && continue
+			 print "$arg"
+
+			# eval "rm -rf ${arg#/}" #${arg#/} => remove leading / if present
+
+			# rm -i "$arg"
+	done
+
+	rm "$tmpfile"
 }
