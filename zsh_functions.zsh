@@ -547,21 +547,22 @@ MRsetTmux(){
 # create a shell template for new scripts...
 vsShell () {
 
-	if ! cp /Users/martinritter/Documents/Development/Scripts/bash/__DEFAULT\ SCRIPT/defaultScript.sh /Users/martinritter/Documents/Development/Scripts/bash/"$1"; then
+	if ! cp /Users/martinritter/Documents/__MR/Development/Scripts/bash/__DEFAULT\ SCRIPT/defaultScript.sh /Users/martinritter/Documents/Development/Scripts/bash/"$1"; then
 
 		echo >&2 "ERROR: couldn't copy defaultScript.sh to $1"
 
 		exit 1
 	fi
 
-	code /Users/martinritter/Documents/Development/Scripts/bash/"$1"
+	code /Users/martinritter/Documents/__MR/Development/Scripts/bash/"$1"
 }
 
 rcow()
 {
+	clear
 	#pick a random cow file...
 	rAppearance=$(command gshuf -n1 -e /opt/local/share/cowsay/cows/*)
-	rAppearance2=$(command gshuf -n1 -e /Users/martinritter/Documents/Development/Scripts/bash/cows/*)
+	rAppearance2=$(command gshuf -n1 -e /Users/martinritter/Documents/__MR/Development/Scripts/bash/cows/*)
 
 	#generate fortune
 	fort=$(command fortune)
@@ -618,4 +619,43 @@ TEST() {
 	done
 
 	rm "$tmpfile"
+}
+
+CheckPiIp()
+{
+	print "==================================="
+	print "\n\n\t Checking IP for Pi:\n"
+	print "===================================\n"
+
+	hostname='raspberrypi'
+
+	ip=$(command dig +short ${hostname})
+
+	if [ -n "$ip" ]; then
+		print "\nIP: ${ip}\n"
+
+		w | grep "pi@"
+
+		if [ $? -eq 0 ]; then
+			print '\n=================================================='
+			print '============ already connected to pi! ============'
+			print '==================================================\n'
+		else
+
+			print "\nShould we connect to pi via SSH? [y/n]"
+			read connectionCheck
+
+			if  [[ -z "$connectionCheck" || "$connectionCheck:u" = "N" || "$connectionCheck:u" = "NO" ]]; then
+
+			# print ''
+			print "nope? bye...\n"
+
+			elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
+				print "\nconnecting: pi@${ip}"
+				ssh "pi@${ip}"
+			fi
+		fi
+	else
+		echo "Could not resolve hostname. No Pi found"
+	fi
 }
