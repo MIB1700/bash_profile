@@ -100,7 +100,7 @@ alias openbash="openT ~/.zshrc"
 alias obs="openT ~/.config/starship.toml"
 
 # remove all aliases... re-load the .bash_profile
-alias rb="unalias -a; clear; source ~/.zshrc;"
+alias rb="unalias -a; clear; source ~/.zshenv; source ~/.zshrc;"
 
 alias opensim="open -n /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app"
 
@@ -234,3 +234,11 @@ alias piIp="dig +short raspberrypi" #"arp -na | grep -i 'b8:27:eb'"
 alias piip="piIp"
 alias piIP="piIp"
 alias PIIP="piip"
+
+alias piConnect="Pi"
+alias piconnect="Pi"
+alias piC="Pi"
+alias connectPi="Pi"
+alias connectpi="Pi"
+alias connPi="Pi"
+alias connpi="Pi"

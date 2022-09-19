@@ -27,6 +27,51 @@ reverseVideoAudio() {
 
 	ffmpeg -i "$STR" -vf reverse -af areverse "$FNAME"_reversed."$EXT"
 }
+videosToMp4()
+{
+	for f in *
+	do
+		STR="$f"
+		EXT=${STR##*.}
+		FNAME=${STR%.*}
+
+		ffmpeg -i "$STR" "$FNAME".mp4
+	done
+}
+
+stereoToMono()
+{
+	STR="$1"
+	EXT=${STR##*.}
+	FNAME=${STR%.*}
+
+	ffmpeg -i "$STR" -map_channel 0.0.0 "$FNAME"_LEFT."$EXT" -map_channel 0.0.1 "$FNAME"_RIGHT."$EXT"
+   #ffmpeg -i INPUT  -map_channel 0.0.0  OUTPUT_CH0          -map_channel 0.0.1   OUTPUT_CH1
+}
+audioCutEOF() {
+
+	TRIM_EOF_DURATION=${1:-1.0} # Default is 1.0 second trimmed from EOF
+
+	for f in *
+	do
+		# Trim EOF duration
+		INPUT_DURATION=$(ffprobe -v error -select_streams a:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "${f}")
+		OUTPUT_DURATION=$(bc <<< "$INPUT_DURATION"-"$TRIM_EOF_DURATION")
+		ffmpeg -i "$f" -t "$OUTPUT_DURATION" -c:a mp3 -ab 192k "${f%.*}_trimEnd".mp3
+	done
+}
+audioCutBeginning() {
+
+	TRIM_DURATION=${1:-1.0} # Default is 1.0 second trimmed from EOF
+
+	for f in *
+	do
+		ffmpeg -ss "${TRIM_DURATION}" -i "$f"  -c:a mp3 -ab 192k "${f%.*}_trimStart".mp3
+	done
+}
+#TODO: combine audioCutEOF and audioCutBegining!! input: seconds to cut from beginning AND seconds to cut from end!!
+
+
 #   ------------------------------------------------------------
 setupunity() {
 
@@ -111,6 +156,32 @@ pdf2kindle()
 	mv "${NEWF}" /Users/martinritter/kindle/
 	echo "--------"
 	echo "--------"
+}
+
+pdfs2kindle()
+{
+
+	for file in *
+	do
+		if [[ -f $file ]]; then
+
+				echo "--------"
+			DIR=$(dirname "${file}")
+			FILENAME=$(basename "${file}")
+			FILENAME="${FILENAME%.*}"
+
+			k2pdfopt -dpi 300 -vb 2 -fc- -ui- -om 0.2 -x "${file}"
+
+			NEWF="${DIR}"/"${FILENAME}"_k2opt.pdf
+
+			echo "--------"
+
+			mv "${NEWF}" /Users/martinritter/kindle/
+			echo "--------"
+			echo "--------"
+
+		fi
+	done
 }
 #   ------------------------------------------------------------
 # 	write name of all installed applications to a txt file
@@ -373,7 +444,10 @@ MRaudio2mp3()     {
 
    for f in *
    do
-      ffmpeg -i "$f"  -c:a mp3 -ab 192k "${f%.*}".mp3
+		if [[ $f == *.aif ]]
+		then
+			ffmpeg -i "$f"  -c:a mp3 -ab 192k "${f%.*}".mp3
+		fi
    done
 }
 #   ------------------------------------------------------------
@@ -621,8 +695,11 @@ TEST() {
 	rm "$tmpfile"
 }
 
-CheckPiIp()
+Pi()
 {
+	#WHAT WOULD HAPPEN IF MULTIPLE PIs ARE PRESENT????
+
+
 	print "==================================="
 	print "\n\n\t Checking IP for Pi:\n"
 	print "===================================\n"
