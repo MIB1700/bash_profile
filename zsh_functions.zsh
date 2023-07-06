@@ -444,12 +444,34 @@ MRaudio2mp3()     {
 
    for f in *
    do
-		if [[ $f == *.aif ]]
+		if [[ $f == *.aif || $f == *.wav ]]
 		then
 			ffmpeg -i "$f"  -c:a mp3 -ab 192k "${f%.*}".mp3
 		fi
    done
 }
+MRaif2wav()     {
+
+   for f in *
+   do
+		if [[ $f == *.aif ]]
+		then
+			ffmpeg -i "$f" "${f%.*}".wav
+		fi
+   done
+}
+
+MRwave2aif()     {
+
+   for f in *
+   do
+		if [[ $f == *.wav ]]
+		then
+			ffmpeg -i "$f" "${f%.*}".aif
+		fi
+   done
+}
+
 #   ------------------------------------------------------------
 MRpdf2pngBW()     {
 
@@ -463,10 +485,25 @@ MRpdf2pngBW()     {
 }
 #   ------------------------------------------------------------
 
+
 Zeit_pdf_png() {
 
+	# make sure to be in the directory with the pdf and only give the filename
+	# DO NOT (!!) drag the file to the terminal... the script doesn't strip the path (yet)!
+
+	#TODO: deal with the path (if given)
+
 	nname="$1"
-	convert -alpha remove -quality 100 -density 150 "$nname" "%03d_${nname%.pdf}".png
+	# echo "${nname}"
+	# echo "${nname%.pdf}_shadow"
+	# echo "%03d_${nname%.pdf}".png
+
+	mkdir "${nname%.pdf}_shadow"
+
+	# return
+
+	convert -alpha remove -quality 100 -density 150 "${nname}" "%03d_${nname%.pdf}".png
+
 
 	pngAddShadow
 
@@ -478,8 +515,13 @@ Zeit_pdf_png() {
        if [[ "$f" == "${name}_logo.png" ]]
        then
 			rm "$f"
+			mv "${name}_logo_shadow.png" "${nname%.pdf}_shadow"
 		fi
 	done
+
+	mv "${nname}" "${nname%.pdf}_shadow"
+
+
 }
 
 pngAddShadow()     {
@@ -661,9 +703,495 @@ rcow()
 
 rcow
 
+waveTrans() {
+	# https://stackoverflow.com/questions/52179047/ffmpeg-normalization-waveform
+
+	file_name="$1"
+	color="$2"
+
+	echo "$file_name"
+	echo "$color"
+
+	ffmpeg -i "$file_name" -filter_complex \
+   "compand,[0:a]aformat=channel_layouts=mono,compand=gain=-2, \
+    showwavespic=s=600x120:colors=white,negate[a]; \
+    color="$color":600x120[c]; \
+    [c][a]alphamerge"  -vframes 1 output.png
+
+}
+
+waveform() {
+
+# https://trac.ffmpeg.org/wiki/Waveform
+# https://ffmpeg.org/ffmpeg-filters.html#showspectrumpic
+	# input:
+	# $1 => filename
+	# $2 => string colour name (for waveform)
+	file_name="$1"
+	colour=${2:-"black"}
+
+	# compand=gain=0, \
+
+	ffmpeg -i "$file_name" -filter_complex \
+	"[0:a]aformat=channel_layouts=mono, \
+	showwavespic=s=560x90:colors=$colour" \
+	-frames:v 1 \
+	"${file_name%.*}_waveform_$colour.png"
+
+	#compand => normalize the waveform
+
+	# valid colour names:
+# 	‘AliceBlue’
+	# 0xF0F8FF
+
+	# ‘AntiqueWhite’
+	# 0xFAEBD7
+
+	# ‘Aqua’
+	# 0x00FFFF
+
+	# ‘Aquamarine’
+	# 0x7FFFD4
+
+	# ‘Azure’
+	# 0xF0FFFF
+
+	# ‘Beige’
+	# 0xF5F5DC
+
+	# ‘Bisque’
+	# 0xFFE4C4
+
+	# ‘Black’
+	# 0x000000
+
+	# ‘BlanchedAlmond’
+	# 0xFFEBCD
+
+	# ‘Blue’
+	# 0x0000FF
+
+	# ‘BlueViolet’
+	# 0x8A2BE2
+
+	# ‘Brown’
+	# 0xA52A2A
+
+	# ‘BurlyWood’
+	# 0xDEB887
+
+	# ‘CadetBlue’
+	# 0x5F9EA0
+
+	# ‘Chartreuse’
+	# 0x7FFF00
+
+	# ‘Chocolate’
+	# 0xD2691E
+
+	# ‘Coral’
+	# 0xFF7F50
+
+	# ‘CornflowerBlue’
+	# 0x6495ED
+
+	# ‘Cornsilk’
+	# 0xFFF8DC
+
+	# ‘Crimson’
+	# 0xDC143C
+
+	# ‘Cyan’
+	# 0x00FFFF
+
+	# ‘DarkBlue’
+	# 0x00008B
+
+	# ‘DarkCyan’
+	# 0x008B8B
+
+	# ‘DarkGoldenRod’
+	# 0xB8860B
+
+	# ‘DarkGray’
+	# 0xA9A9A9
+
+	# ‘DarkGreen’
+	# 0x006400
+
+	# ‘DarkKhaki’
+	# 0xBDB76B
+
+	# ‘DarkMagenta’
+	# 0x8B008B
+
+	# ‘DarkOliveGreen’
+	# 0x556B2F
+
+	# ‘Darkorange’
+	# 0xFF8C00
+
+	# ‘DarkOrchid’
+	# 0x9932CC
+
+	# ‘DarkRed’
+	# 0x8B0000
+
+	# ‘DarkSalmon’
+	# 0xE9967A
+
+	# ‘DarkSeaGreen’
+	# 0x8FBC8F
+
+	# ‘DarkSlateBlue’
+	# 0x483D8B
+
+	# ‘DarkSlateGray’
+	# 0x2F4F4F
+
+	# ‘DarkTurquoise’
+	# 0x00CED1
+
+	# ‘DarkViolet’
+	# 0x9400D3
+
+	# ‘DeepPink’
+	# 0xFF1493
+
+	# ‘DeepSkyBlue’
+	# 0x00BFFF
+
+	# ‘DimGray’
+	# 0x696969
+
+	# ‘DodgerBlue’
+	# 0x1E90FF
+
+	# ‘FireBrick’
+	# 0xB22222
+
+	# ‘FloralWhite’
+	# 0xFFFAF0
+
+	# ‘ForestGreen’
+	# 0x228B22
+
+	# ‘Fuchsia’
+	# 0xFF00FF
+
+	# ‘Gainsboro’
+	# 0xDCDCDC
+
+	# ‘GhostWhite’
+	# 0xF8F8FF
+
+	# ‘Gold’
+	# 0xFFD700
+
+	# ‘GoldenRod’
+	# 0xDAA520
+
+	# ‘Gray’
+	# 0x808080
+
+	# ‘Green’
+	# 0x008000
+
+	# ‘GreenYellow’
+	# 0xADFF2F
+
+	# ‘HoneyDew’
+	# 0xF0FFF0
+
+	# ‘HotPink’
+	# 0xFF69B4
+
+	# ‘IndianRed’
+	# 0xCD5C5C
+
+	# ‘Indigo’
+	# 0x4B0082
+
+	# ‘Ivory’
+	# 0xFFFFF0
+
+	# ‘Khaki’
+	# 0xF0E68C
+
+	# ‘Lavender’
+	# 0xE6E6FA
+
+	# ‘LavenderBlush’
+	# 0xFFF0F5
+
+	# ‘LawnGreen’
+	# 0x7CFC00
+
+	# ‘LemonChiffon’
+	# 0xFFFACD
+
+	# ‘LightBlue’
+	# 0xADD8E6
+
+	# ‘LightCoral’
+	# 0xF08080
+
+	# ‘LightCyan’
+	# 0xE0FFFF
+
+	# ‘LightGoldenRodYellow’
+	# 0xFAFAD2
+
+	# ‘LightGreen’
+	# 0x90EE90
+
+	# ‘LightGrey’
+	# 0xD3D3D3
+
+	# ‘LightPink’
+	# 0xFFB6C1
+
+	# ‘LightSalmon’
+	# 0xFFA07A
+
+	# ‘LightSeaGreen’
+	# 0x20B2AA
+
+	# ‘LightSkyBlue’
+	# 0x87CEFA
+
+	# ‘LightSlateGray’
+	# 0x778899
+
+	# ‘LightSteelBlue’
+	# 0xB0C4DE
+
+	# ‘LightYellow’
+	# 0xFFFFE0
+
+	# ‘Lime’
+	# 0x00FF00
+
+	# ‘LimeGreen’
+	# 0x32CD32
+
+	# ‘Linen’
+	# 0xFAF0E6
+
+	# ‘Magenta’
+	# 0xFF00FF
+
+	# ‘Maroon’
+	# 0x800000
+
+	# ‘MediumAquaMarine’
+	# 0x66CDAA
+
+	# ‘MediumBlue’
+	# 0x0000CD
+
+	# ‘MediumOrchid’
+	# 0xBA55D3
+
+	# ‘MediumPurple’
+	# 0x9370D8
+
+	# ‘MediumSeaGreen’
+	# 0x3CB371
+
+	# ‘MediumSlateBlue’
+	# 0x7B68EE
+
+	# ‘MediumSpringGreen’
+	# 0x00FA9A
+
+	# ‘MediumTurquoise’
+	# 0x48D1CC
+
+	# ‘MediumVioletRed’
+	# 0xC71585
+
+	# ‘MidnightBlue’
+	# 0x191970
+
+	# ‘MintCream’
+	# 0xF5FFFA
+
+	# ‘MistyRose’
+	# 0xFFE4E1
+
+	# ‘Moccasin’
+	# 0xFFE4B5
+
+	# ‘NavajoWhite’
+	# 0xFFDEAD
+
+	# ‘Navy’
+	# 0x000080
+
+	# ‘OldLace’
+	# 0xFDF5E6
+
+	# ‘Olive’
+	# 0x808000
+
+	# ‘OliveDrab’
+	# 0x6B8E23
+
+	# ‘Orange’
+	# 0xFFA500
+
+	# ‘OrangeRed’
+	# 0xFF4500
+
+	# ‘Orchid’
+	# 0xDA70D6
+
+	# ‘PaleGoldenRod’
+	# 0xEEE8AA
+
+	# ‘PaleGreen’
+	# 0x98FB98
+
+	# ‘PaleTurquoise’
+	# 0xAFEEEE
+
+	# ‘PaleVioletRed’
+	# 0xD87093
+
+	# ‘PapayaWhip’
+	# 0xFFEFD5
+
+	# ‘PeachPuff’
+	# 0xFFDAB9
+
+	# ‘Peru’
+	# 0xCD853F
+
+	# ‘Pink’
+	# 0xFFC0CB
+
+	# ‘Plum’
+	# 0xDDA0DD
+
+	# ‘PowderBlue’
+	# 0xB0E0E6
+
+	# ‘Purple’
+	# 0x800080
+
+	# ‘Red’
+	# 0xFF0000
+
+	# ‘RosyBrown’
+	# 0xBC8F8F
+
+	# ‘RoyalBlue’
+	# 0x4169E1
+
+	# ‘SaddleBrown’
+	# 0x8B4513
+
+	# ‘Salmon’
+	# 0xFA8072
+
+	# ‘SandyBrown’
+	# 0xF4A460
+
+	# ‘SeaGreen’
+	# 0x2E8B57
+
+	# ‘SeaShell’
+	# 0xFFF5EE
+
+	# ‘Sienna’
+	# 0xA0522D
+
+	# ‘Silver’
+	# 0xC0C0C0
+
+	# ‘SkyBlue’
+	# 0x87CEEB
+
+	# ‘SlateBlue’
+	# 0x6A5ACD
+
+	# ‘SlateGray’
+	# 0x708090
+
+	# ‘Snow’
+	# 0xFFFAFA
+
+	# ‘SpringGreen’
+	# 0x00FF7F
+
+	# ‘SteelBlue’
+	# 0x4682B4
+
+	# ‘Tan’
+	# 0xD2B48C
+
+	# ‘Teal’
+	# 0x008080
+
+	# ‘Thistle’
+	# 0xD8BFD8
+
+	# ‘Tomato’
+	# 0xFF6347
+
+	# ‘Turquoise’
+	# 0x40E0D0
+
+	# ‘Violet’
+	# 0xEE82EE
+
+	# ‘Wheat’
+	# 0xF5DEB3
+
+	# ‘White’
+	# 0xFFFFFF
+
+	# ‘WhiteSmoke’
+	# 0xF5F5F5
+
+	# ‘Yellow’
+	# 0xFFFF00
+
+	# ‘YellowGreen’
+	# 0x9ACD32
+
+}
+waveformtrim() {
+
+	# input:
+	# $1 => filename
+	# $2 => string colour name (for waveform)
+	# $3 => start time (in seconds)
+	# $4 => end time (in seconds)
+	file_name="$1"
+	colour="${2:-"black"}"
+	start="${3:-0}"
+	end="${4:-20}"
+
+
+	ffmpeg -i "$file_name" -filter_complex \
+	"aformat=channel_layouts=mono, \
+	compand=gain=-6, \
+	atrim=$start:$end, \
+	showwavespic=s=560x90:colors=$colour" \
+	-frames:v 1 \
+	"${file_name%.*}_waveform_"$colour"_$start-$end.png"
+}
+
+to_seconds() {
+    local epoch=$(date --utc -d @0 +%F)
+    date --utc -d "$epoch $1" +%s.%09N
+}
+
 TEST() {
 
-	clear
+	# clear
 	# ls
 
 	# if [ $? -eq 0 ]; then
@@ -677,27 +1205,24 @@ TEST() {
 
 	# rm "$tmpfile"
 
-	tmpfile=$(mktemp)
+	# tmpfile=$(mktemp)
 
-	curl -o $tmpfile https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
+	# curl -o $tmpfile https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
 
-	args=( "${(@f)$(< $tmpfile)}" )
+	# args=( "${(@f)$(< $tmpfile)}" )
 
-	for arg in "${args[@]}" ; do
-		[[ "$arg" =~ ^#.*$ ]] && continue
-			 print "$arg"
+	# for file in *
+	# do
+	# 	if [[ -d $file ]]; then
 
-			# eval "rm -rf ${arg#/}" #${arg#/} => remove leading / if present
+	# 		dirname=$(command basename "$file")
+	# 		shortcuts run "Make PDF" -i "$file/"*.jpg -o /Users/martinritter/Downloads/Hellraiser/Output/"$dirname.pdf"
 
-			# rm -i "$arg"
-	done
+	# 	fi
 
-	rm "$tmpfile"
-}
+	# done
 
-Pi()
-{
-	#WHAT WOULD HAPPEN IF MULTIPLE PIs ARE PRESENT????
+	#   rsync ~/SourceDirectory/* username@192.168.56.100:~/Destination
 
 
 	print "==================================="
@@ -710,6 +1235,32 @@ Pi()
 
 	if [ -n "$ip" ]; then
 		print "\nIP: ${ip}\n"
+
+		w | grep "pi@"
+
+		print "\nconnecting: pi@${ip}"
+
+		rsync --exclude ".git/*" --exclude  "venv/*" --exclude "ProjectDescription_updated_7000Budget.pdf" . "pi@${ip}:/home/pi/Documents/Development/Frescobaldi"
+	fi
+}
+
+Pi()
+{
+	#WHAT WOULD HAPPEN IF MULTIPLE PIs ARE PRESENT????
+
+	print "==================================="
+	print "\n\n\t Checking IP for Pi:\n"
+	print "===================================\n"
+
+	hostname='raspberrypi'
+
+	# echo "trying to find $hostname"
+
+	# ip=$(command dig +short ${hostname})
+
+	# if [ -n "$ip" ]; then
+
+	# 	print "\nIP: ${ip}\n"
 
 		w | grep "pi@"
 
@@ -728,11 +1279,157 @@ Pi()
 			print "nope? bye...\n"
 
 			elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
-				print "\nconnecting: pi@${ip}"
-				ssh "pi@${ip}"
+				print "\nconnecting: pi@${hostname}.local"
+				ssh "pi@${hostname}.local"
 			fi
 		fi
+	# else
+	# 	echo "Could not resolve hostname. No Pi found"
+	# fi
+}
+
+plex()
+{
+	#WHAT WOULD HAPPEN IF MULTIPLE PIs ARE PRESENT????
+
+	print "==================================="
+	print "\n\n\t Checking IP for Pi:\n"
+	print "===================================\n"
+
+	hostname='raspberrypiplex'
+
+		w | grep "pi@"
+
+		if [ $? -eq 0 ]; then
+			print '\n=================================================='
+			print '============ already connected to pi! ============'
+			print '==================================================\n'
+		else
+
+			print "\nShould we connect to pi via SSH? [y/n]"
+			read connectionCheck
+
+			if  [[ -z "$connectionCheck" || "$connectionCheck:u" = "N" || "$connectionCheck:u" = "NO" ]]; then
+
+			# print ''
+			print "nope? bye...\n"
+
+			elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
+				print "\nconnecting: pi@${hostname}.local"
+				ssh "pi@${hostname}.local"
+			fi
+		fi
+}
+
+fresco2Pi()
+{
+# simple bash script that lets me sync the entire Frescobaldi folder to the pi over ssh...
+# I do this because it's just toooooo painful to use github on the pi
+# this is a sync (!!!) not a copy each time
+#
+# find if a RBP is on the network... get the IP... put the IP into the rsync command
+# exclude the .git, venv, folders and pdf file...
+
+print "==================================="
+print "\n\n\t Checking IP for Pi:\n"
+print "===================================\n"
+
+hostname='raspberrypiplex'
+
+ip=$(command dig +short ${hostname})
+
+if [ -n "$ip" ]; then
+
+    print "\nIP: ${ip}\n"
+
+    # w | grep "pi@"
+
+    print "\nconnecting: pi@${ip}"
+
+    rsync -vazhPm --exclude ".git/*" --exclude  "venv/*" --exclude "ProjectDescription_updated_7000Budget.pdf" . "pi@${ip}:/home/pi/Documents/Development/Frescobaldi"
+else
+    print "\nDo you know the IP? [y/n]"
+    read connectionCheck
+
+    if  [[ -z "$connectionCheck" || "$connectionCheck:u" = "N" || "$connectionCheck:u" = "NO" ]]; then
+
+    # print ''
+    print "nope? bye...\n"
+
+    elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
+        print "\nconnecting: pi@${ip}"
+        rsync -vazhPm --exclude ".git/*" --exclude  "venv/*" --exclude "ProjectDescription_updated_7000Budget.pdf" . "pi@${ip}:/home/pi/Documents/Development/Frescobaldi"
+    fi
+fi
+
+}
+
+mv2pi()
+{
+	print "==================================="
+	print "\n\n\t Checking IP for Pi:\n"
+	print "===================================\n"
+
+	hostname='raspberrypi'
+	path2pi=$1
+
+	echo "$path2pi"
+
+	ip=$(command dig +short ${hostname})
+
+	if [ -n "$ip" ]; then
+
+		print "\nIP: ${ip}\n"
+
+		# w | grep "pi@"
+
+		print "\nconnecting: pi@${ip}"
+
+		rsync -vazhPm --exclude ".git/*" --exclude  "venv/*" "$path2pi" "pi@${ip}:/home/pi/Downloads/"
+
+#!obviously this won't work....
+		# echo "now moving ${path2pi:t} to HD..."
+
+		# print "\nMove to Movies? [y/n]"
+		# read movies
+
+		# if  [[ -z "$movies" || "$movies:u" = "N" || "$movies:u" = "NO" ]]; then
+
+		# 	mv /home/pi/Downloads/${path2pi:t} /mnt/plex2/TV\ Shows/
+
+		# elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
+
+		# 	mv "pi@${ip}:/home/pi/Downloads/"${path2pi:t} "pi@${ip}:/mnt/plex2/Movies/"
+		# fi
+
 	else
-		echo "Could not resolve hostname. No Pi found"
+
+		print "\nDo you know the IP? [y/n]"
+		read connectionCheck
+
+		if  [[ -z "$connectionCheck" || "$connectionCheck:u" = "N" || "$connectionCheck:u" = "NO" ]]; then
+
+		# print ''
+		print "nope? bye...\n"
+
+
+		elif [[ "$connectionCheck:u" = "Y" || "$connectionCheck:u" = "YES" ]]; then
+
+			print "\nconnecting: pi@${ip}"
+			rsync -vazhPm --exclude ".git/*" --exclude  "venv/*" "$path2pi" "pi@${ip}:/home/pi/Downloads/"
+
+		fi
 	fi
+}
+
+Pdf2pngS()
+{
+	size="${1:-1920}"
+	for f in *
+    do
+       if [[ $f == *.pdf ]]
+       then
+           convert -density 288 "$f" -quality 100 -interpolative-resize "${size}x" -alpha remove -type TrueColor output.png
+       fi
+    done
 }

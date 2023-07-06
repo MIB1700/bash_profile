@@ -57,7 +57,7 @@ alias rm="rm -v"
 alias cp="cp -iv"
 	alias cpv="rsync -ah --info=progress2 " #use instead of copy... with progressbar!
 
-alias rsync="rsync -vazhPm"
+alias rsync="rsync -vazhPmp "
 alias rssh="rsync -e ssh "
 
 alias mount="mount |column -t "
@@ -242,3 +242,11 @@ alias connectPi="Pi"
 alias connectpi="Pi"
 alias connPi="Pi"
 alias connpi="Pi"
+
+alias portc="portcheck"
+
+alias rmicloud="find '/Users/martinritter/Library/Mobile Documents/com~apple~CloudDocs' -type f -exec brctl evict {} \;"
+
+alias m0="brightness -d1 -v 0"
+# system_profiler SPDisplaysDataType | sed '1,/M34WQ/d' | grep "Online: Yes"
+#see if second display is online!
